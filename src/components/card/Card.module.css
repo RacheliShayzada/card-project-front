@@ -1,0 +1,45 @@
+.card {
+    position: relative;
+    padding: 1rem;
+    border-radius: 8px;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 250px;
+}
+
+.cardControls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.deleteBtn {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    font-size: 1.2rem;
+}
+
+.textInput {
+    width: 100%; /* מתאים לרוחב הכרטיס */
+    padding: 8px; /* מרווח פנימי */
+    font-size: 16px; /* גודל טקסט */
+    border: 1px solid #ccc; /* מסגרת עדינה */
+    border-radius: 4px; /* פינות מעוגלות */
+    outline: none; /* הסרת קו חיצוני ברגע הפוקוס */
+    box-sizing: border-box; /* התייחסות לפדינג ובורדר בתוך הרוחב הכולל */
+}
+
+.text{
+    margin-top: 1rem;
+    font-size: 1.5rem;
+
+}
+
+.text:hover{
+    cursor: pointer;
+}
+

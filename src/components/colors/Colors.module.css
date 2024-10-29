@@ -1,0 +1,14 @@
+.colorPicker {
+    display: flex;
+    gap: 0.3rem;
+    background-color: rgb(228, 222, 222, 0.85);
+    padding: 5px;
+    border-radius: 25px;
+}
+
+.colorOption {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    cursor: pointer;
+}
