@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styles from './Card.module.css';
 import Colors from '../colors/Colors';
 
-const Card = ({ card, onDelete, onCardFiledChange }) => {
+const Card = ({ card, onDelete, onCardFiledChange, onPin, onUnpin, isPinned }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [updatedText, setUpdatedText] = useState(card.text);
 
@@ -47,10 +47,16 @@ const Card = ({ card, onDelete, onCardFiledChange }) => {
                     card={card}
                     onColorChange={handleColorChange}
                 />
+                <div>
+                <button onClick={isPinned ? onUnpin : onPin} className={styles.pinBtn}>
+                    {isPinned ? '🔓' : '📌'}
+                </button>
                 <button onClick={() => onDelete(card.id)} className={styles.deleteBtn}>🗑️</button>
+                </div>
             </div>
         </div>
     );
 };
 
 export default Card;
+
