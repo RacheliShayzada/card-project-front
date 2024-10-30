@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import styles from './Card.module.css'
+import styles from './Card.module.css';
 import Colors from '../colors/Colors';
 
 const Card = ({ card, onDelete, onCardFiledChange }) => {
@@ -17,6 +17,12 @@ const Card = ({ card, onDelete, onCardFiledChange }) => {
         }
     };
 
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            handleBlur();
+        }
+    };
+
     const handleColorChange = (newColor) => {
         onCardFiledChange(card.id, { color: newColor });
     };
@@ -29,6 +35,7 @@ const Card = ({ card, onDelete, onCardFiledChange }) => {
                     value={updatedText}
                     onChange={handleTextInputChange}
                     onBlur={handleBlur}
+                    onKeyDown={handleKeyDown}
                     autoFocus
                     className={styles.textInput}
                 />
