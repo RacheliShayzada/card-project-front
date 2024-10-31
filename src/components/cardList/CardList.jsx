@@ -11,7 +11,7 @@ function CardList() {
         const fetchData = async () => {
             try {
                 const fetchedCards = await getCards();
-                setCards(sortCardsByPinned(fetchedCards));
+                setCards(fetchedCards);
             } catch (err) {
                 console.log('Error fetching data:', err);
             }
@@ -20,13 +20,13 @@ function CardList() {
     }, []);
 
     useEffect(() => {
+        const sortCardsByPinned = (cardsToSort) => [
+            ...cardsToSort.filter(card => pinnedCardIds.includes(card.id)),
+            ...cardsToSort.filter(card => !pinnedCardIds.includes(card.id))
+        ];
         setCards(prevCards => sortCardsByPinned(prevCards));
     }, [pinnedCardIds]);
 
-    const sortCardsByPinned = (cardsToSort) => [
-        ...cardsToSort.filter(card => pinnedCardIds.includes(card.id)),
-        ...cardsToSort.filter(card => !pinnedCardIds.includes(card.id))
-    ];
 
     const handleDelete = async (id) => {
         try {
