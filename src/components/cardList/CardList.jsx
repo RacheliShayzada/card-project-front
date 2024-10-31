@@ -5,12 +5,13 @@ import styles from './CardList.module.css';
 
 function CardList() {
     const [cards, setCards] = useState([]);
-    const [pinnedCardIds, setPinnedCardIds] = useState([]); // סטייט לכרטיסים המוצמדים
+    const [pinnedCardIds, setPinnedCardIds] = useState([]);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                setCards(await getCards());
+                const fetchedCards = await getCards();
+                setCards(sortCardsByPinned(fetchedCards));
             } catch (err) {
                 console.log('Error fetching data:', err);
             }
@@ -18,11 +19,20 @@ function CardList() {
         fetchData();
     }, []);
 
+    useEffect(() => {
+        setCards(prevCards => sortCardsByPinned(prevCards));
+    }, [pinnedCardIds]);
+
+    const sortCardsByPinned = (cardsToSort) => [
+        ...cardsToSort.filter(card => pinnedCardIds.includes(card.id)),
+        ...cardsToSort.filter(card => !pinnedCardIds.includes(card.id))
+    ];
+
     const handleDelete = async (id) => {
         try {
             await deleteCard(id);
-            setCards(cards.filter(card => card.id !== id));
-            setPinnedCardIds(pinnedCardIds.filter(pinnedId => pinnedId !== id)); // להסיר מהסטייט של ההצמדה אם נמחק
+            setCards(prevCards => prevCards.filter(card => card.id !== id));
+            setPinnedCardIds(prevPinned => prevPinned.filter(pinnedId => pinnedId !== id));
             console.log('Card deleted successfully:', id);
         } catch (err) {
             console.log('Error deleting card:', err);
@@ -33,7 +43,7 @@ function CardList() {
         try {
             const cardToAdd = { color: 'khaki', text: 'New Card' };
             const newCard = await createCard(cardToAdd);
-            setCards([...cards, newCard]);
+            setCards(prevCards => [...prevCards, newCard]);
             console.log('Card added successfully:', newCard);
         } catch (err) {
             console.log('Error adding card:', err);
@@ -43,7 +53,9 @@ function CardList() {
     const updateCardField = async (id, updates) => {
         try {
             await updateCard(id, updates);
-            setCards(cards.map(card => card.id === id ? { ...card, ...updates } : card));
+            setCards(prevCards =>
+                prevCards.map(card => (card.id === id ? { ...card, ...updates } : card))
+            );
             console.log('Card updated successfully:', id, updates);
         } catch (err) {
             console.log('Error updating card:', err);
@@ -58,15 +70,9 @@ function CardList() {
         setPinnedCardIds(prev => prev.filter(pinnedId => pinnedId !== id));
     };
 
-    // Sort cards so pinned cards appear at the start
-    const sortedCards = [
-        ...cards.filter(card => pinnedCardIds.includes(card.id)), // כרטיסים מוצמדים
-        ...cards.filter(card => !pinnedCardIds.includes(card.id)) // כרטיסים לא מוצמדים
-    ];
-
     return (
         <div className={styles.cardContainer}>
-            {sortedCards.map(card => (
+            {cards.map(card => (
                 <Card
                     key={card.id}
                     card={card}
@@ -74,7 +80,7 @@ function CardList() {
                     onCardFiledChange={updateCardField}
                     onPin={() => handlePinCard(card.id)}
                     onUnpin={() => handleUnpinCard(card.id)}
-                    isPinned={pinnedCardIds.includes(card.id)} // לשליחת המידע אם הכרטיס מוצמד
+                    isPinned={pinnedCardIds.includes(card.id)}
                 />
             ))}
             <button onClick={handleAddCard} className={styles.addCardBtn}>+</button>
