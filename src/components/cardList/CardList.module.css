@@ -21,3 +21,58 @@
     justify-content: center;
     margin: 1rem auto;
 }
+
+
+.filterInput {
+    width: 100%;
+    max-width: 300px;
+    padding: 10px 15px 10px 40px; /* מרחק כדי להתאים לאייקון */
+    font-size: 16px;
+    color: #333;
+    border: 1px solid #ddd;
+    border-radius: 25px;
+    outline: none;
+    transition: border-color 0.3s ease;
+    background-color: #f9f9f9;
+    background-image: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"%3E%3Cpath fill="%23999" d="M10 2a8 8 0 0 1 6.32 12.9l4.4 4.39a1 1 0 0 1-1.42 1.42l-4.4-4.39A8 8 0 1 1 10 2zm0 2a6 6 0 1 0 0 12A6 6 0 0 0 10 4z"/%3E%3C/svg%3E');
+    background-repeat: no-repeat;
+    background-position: 10px center; /* אייקון בצד שמאל */
+    background-size: 20px 20px;
+}
+
+.filterInput:focus {
+    border-color: #66afe9;
+    background-color: #fff;
+    box-shadow: 0 0 5px rgba(102, 175, 233, 0.5);
+}
+
+.filterBtn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 15px;
+    font-size: 16px;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-left: 10px;
+}
+
+.filterBtn:hover {
+    background-color: #0056b3;
+}
+
+.filterBtn:focus {
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+.filterBtn::before {
+    content: "🔍";
+    margin-right: 8px; /* מרווח בין האייקון לטקסט */
+    font-size: 18px;
+}
+

@@ -6,12 +6,15 @@ import styles from './CardList.module.css';
 function CardList() {
     const [cards, setCards] = useState([]);
     const [pinnedCardIds, setPinnedCardIds] = useState([]);
+    const [filterText, setFilterText] = useState(''); // State for filter input
+    const [filteredCards, setFilteredCards] = useState([]); // State for filtered cards
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const fetchedCards = await getCards();
                 setCards(fetchedCards);
+                setFilteredCards(fetchedCards); // Initialize filtered cards
             } catch (err) {
                 console.log('Error fetching data:', err);
             }
@@ -24,9 +27,8 @@ function CardList() {
             ...cardsToSort.filter(card => pinnedCardIds.includes(card.id)),
             ...cardsToSort.filter(card => !pinnedCardIds.includes(card.id))
         ];
-        setCards(prevCards => sortCardsByPinned(prevCards));
+        setFilteredCards(prevCards => sortCardsByPinned(prevCards));
     }, [pinnedCardIds]);
-
 
     const handleDelete = async (id) => {
         try {
@@ -44,6 +46,7 @@ function CardList() {
             const cardToAdd = { color: 'khaki', text: 'New Card' };
             const newCard = await createCard(cardToAdd);
             setCards(prevCards => [...prevCards, newCard]);
+            setFilteredCards(prevCards => [...prevCards, newCard]);
             console.log('Card added successfully:', newCard);
         } catch (err) {
             console.log('Error adding card:', err);
@@ -54,6 +57,9 @@ function CardList() {
         try {
             await updateCard(id, updates);
             setCards(prevCards =>
+                prevCards.map(card => (card.id === id ? { ...card, ...updates } : card))
+            );
+            setFilteredCards(prevCards =>
                 prevCards.map(card => (card.id === id ? { ...card, ...updates } : card))
             );
             console.log('Card updated successfully:', id, updates);
@@ -70,21 +76,44 @@ function CardList() {
         setPinnedCardIds(prev => prev.filter(pinnedId => pinnedId !== id));
     };
 
+    const handleFilterChange = (e) => {
+        setFilterText(e.target.value); // Update filter text without applying
+    };
+
+    const applyFilter = () => {
+        setFilteredCards(
+            cards.filter(card =>
+                card.text.toLowerCase().includes(filterText.toLowerCase())
+            )
+        );
+    };
+
     return (
-        <div className={styles.cardContainer}>
-            {cards.map(card => (
-                <Card
-                    key={card.id}
-                    card={card}
-                    onDelete={handleDelete}
-                    onCardFiledChange={updateCardField}
-                    onPin={() => handlePinCard(card.id)}
-                    onUnpin={() => handleUnpinCard(card.id)}
-                    isPinned={pinnedCardIds.includes(card.id)}
-                />
-            ))}
-            <button onClick={handleAddCard} className={styles.addCardBtn}>+</button>
-        </div>
+        <>
+        <br />
+            <input
+                type="text"
+                placeholder="Filter cards..."
+                value={filterText}
+                onChange={handleFilterChange}
+                className={styles.filterInput}
+            />
+            <button onClick={applyFilter} className={styles.filterBtn}></button>
+            <div className={styles.cardContainer}>
+                {filteredCards.map(card => (
+                    <Card
+                        key={card.id}
+                        card={card}
+                        onDelete={handleDelete}
+                        onCardFiledChange={updateCardField}
+                        onPin={() => handlePinCard(card.id)}
+                        onUnpin={() => handleUnpinCard(card.id)}
+                        isPinned={pinnedCardIds.includes(card.id)}
+                    />
+                ))}
+                <button onClick={handleAddCard} className={styles.addCardBtn}>+</button>
+            </div>
+        </>
     );
 }
 
